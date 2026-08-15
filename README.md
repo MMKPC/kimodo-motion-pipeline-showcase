@@ -1,8 +1,8 @@
 # KiMoDo: Human Motion for the Moments That Matter
 
-Public portfolio presentation of a local, GPU-powered human-motion workflow built around NVIDIA KiMoDo.
+Private portfolio presentation of a local, GPU-powered human-motion workflow built around NVIDIA KiMoDo.
 
-The showcase page explains the text-to-motion pipeline, shows the browser gallery preview, and links to the technical project boundary. The original private development repository remains separate from this public presentation surface.
+The showcase page explains the text-to-motion pipeline, shows the browser gallery preview, and links to the technical project boundary. The original private development repository remains separate from this controlled presentation surface.
 
 Open the [portfolio breakdown](https://mmkpc.github.io/kimodo-motion-pipeline-showcase/) to see the system context and [view the preview asset](https://mmkpc.github.io/kimodo-motion-pipeline-showcase/preview.png).
 
@@ -16,3 +16,7 @@ Open the [portfolio breakdown](https://mmkpc.github.io/kimodo-motion-pipeline-sh
 ## Public boundary
 
 This repository contains the portfolio page and preview asset only. It does not publish private machine setup, local paths, credentials, or the private development workflow.
+
+## Studio control
+
+This repository is now a private MMKPC Studios showcase artifact for later integration into MMKProspects.com. The current access policy is in `LICENSE`, credential handling is in `SECURITY.md`, and the release gate is `scripts/validate_studio_manifest.ps1`.
