@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KiMoDo — Human Motion for the Moments That Matter</title>
+<meta name="description" content="Local, GPU-powered human motion generation from text. By MMKPC Studios.">
+<meta property="og:title" content="KiMoDo — Human Motion for the Moments That Matter">
+<meta property="og:description" content="Local, GPU-powered human motion generation from text. By MMKPC Studios.">
+<meta property="og:image" content="https://mmkpc.github.io/kimodo-motion-pipeline-showcase/preview.png">
+<meta property="og:url" content="https://mmkpc.github.io/kimodo-motion-pipeline-showcase/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mmkpc.github.io/kimodo-motion-pipeline-showcase/preview.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0d14;
+    color: #e8eaf0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Header ─────────────────────────────────────── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    border-bottom: 1px solid #1e2535;
+  }
+  .logo { font-size: 13px; color: #f97316; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+  .badge {
+    background: #f97316;
+    color: #0a0d14;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ── Hero ────────────────────────────────────────── */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 40px 40px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    max-width: 800px;
+  }
+  .hero h1 span { color: #f97316; }
+  .hero p {
+    margin-top: 16px;
+    font-size: 1.1rem;
+    color: #8892a4;
+    max-width: 560px;
+    line-height: 1.6;
+  }
+
+  /* ── Canvas stage ────────────────────────────────── */
+  .stage {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 40px auto 0;
+    background: #0e1420;
+    border: 1px solid #1e2535;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .stage-label {
+    position: absolute;
+    top: 16px;
+    left: 20px;
+    font-size: 11px;
+    color: #f97316;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .stage-prompt {
+    position: absolute;
+    bottom: 16px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 13px;
+    color: #4a5568;
+    letter-spacing: 0.5px;
+  }
+  .stage-prompt em { color: #718096; font-style: normal; }
+  canvas { display: block; width: 100%; }
+
+  /* ── Pipeline steps ──────────────────────────────── */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 48px 40px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 24px;
+    min-width: 120px;
+  }
+  .step-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: #131926;
+    border: 1px solid #1e2535;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  .step-title { font-size: 13px; font-weight: 600; color: #e8eaf0; }
+  .step-sub { font-size: 11px; color: #4a5568; margin-top: 3px; }
+  .arrow { color: #1e2535; font-size: 20px; margin: 0 4px; align-self: center; padding-bottom: 16px; }
+
+  /* ── Stats ───────────────────────────────────────── */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 0 40px 48px;
+    max-width: 900px;
+    margin: 0 auto;
+    border-bottom: 1px solid #1e2535;
+  }
+  .stat { text-align: center; }
+  .stat-n { font-size: 2.2rem; font-weight: 700; color: #f97316; }
+  .stat-l { font-size: 12px; color: #4a5568; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+  /* ── CTA ─────────────────────────────────────────── */
+  .cta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 56px 40px;
+    text-align: center;
+    gap: 16px;
+  }
+  .cta h2 { font-size: 1.6rem; font-weight: 700; }
+  .cta p { color: #8892a4; font-size: 0.95rem; max-width: 420px; line-height: 1.6; }
+  .btn-group { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+  .btn-primary {
+    background: #f97316;
+    color: #0a0d14;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    transition: opacity .15s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-secondary {
+    background: transparent;
+    color: #8892a4;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid #1e2535;
+    transition: border-color .15s, color .15s;
+  }
+  .btn-secondary:hover { border-color: #f97316; color: #f97316; }
+
+  /* ── Reqs ────────────────────────────────────────── */
+  .reqs {
+    background: #0e1420;
+    border-top: 1px solid #1e2535;
+    padding: 40px;
+    text-align: center;
+  }
+  .reqs h3 { font-size: 14px; color: #4a5568; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
+  .req-list {
+    display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+  }
+  .req-tag {
+    background: #131926;
+    border: 1px solid #1e2535;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: #8892a4;
+  }
+  .req-tag.required { border-color: #f97316; color: #f97316; }
+
+  footer {
+    text-align: center;
+    padding: 24px 40px;
+    font-size: 12px;
+    color: #2d3748;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">MMKPC Studios</div>
+  <div class="badge">Local GPU Workflow</div>
+</header>
+
+<section class="hero">
+  <h1>Human motion for the<br><span>moments that matter.</span></h1>
+  <p>Local, GPU-powered motion generation. Describe a human moment. Watch it move. No studio. No equipment. No cost.</p>
+</section>
+
+<!-- Live canvas demo -->
+<div style="max-width:900px;margin:0 auto;padding:0 40px;">
+  <div class="stage">
+    <div class="stage-label">Live Preview — Human Motion</div>
+    <canvas id="c" height="260"></canvas>
+    <div class="stage-prompt">prompt: <em>"a person walks forward slowly"</em></div>
+  </div>
+</div>
+
+<!-- Pipeline -->
+<div class="pipeline">
+  <div class="step">
+    <div class="step-icon">✍️</div>
+    <div class="step-title">Describe it</div>
+    <div class="step-sub">Plain language</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="step">
+    <div class="step-icon">🧠</div>
+    <div class="step-title">KiMoDo</div>
+    <div class="step-sub">NVIDIA SOMA-RP</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="step">
+    <div class="step-icon">🦴</div>
+    <div class="step-title">Motion Data</div>
+    <div class="step-sub">Full body, 30fps</div>
+  </div>
+  <div class="arrow">→</div>
+  <div class="step">
+    <div class="step-icon">🎬</div>
+    <div class="step-title">Your Story</div>
+    <div class="step-sub">Use it anywhere</div>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat"><div class="stat-n">~8s</div><div class="stat-l">5-second clip</div></div>
+  <div class="stat"><div class="stat-n">30fps</div><div class="stat-l">Full body skeleton</div></div>
+  <div class="stat"><div class="stat-n">10s</div><div class="stat-l">Max clip length</div></div>
+  <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Local &amp; offline</div></div>
+</div>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>A local motion pipeline.</h2>
+  <p>KiMoDo turns plain-language direction into full-body motion through a local GPU workflow, with a clean handoff into production tools.</p>
+  <div class="btn-group">
+    <a class="btn-primary" href="https://github.com/MMKPC/kimodo-motion-pipeline-showcase">View the project</a>
+    <a class="btn-secondary" href="preview.png">View preview</a>
+  </div>
+</section>
+
+<!-- Requirements -->
+<div class="reqs">
+  <h3>You'll need</h3>
+  <div class="req-list">
+    <span class="req-tag required">NVIDIA GPU</span>
+    <span class="req-tag required">WSL2 + Ubuntu 22.04</span>
+    <span class="req-tag required">Miniconda in WSL2</span>
+    <span class="req-tag">Windows 10/11</span>
+    <span class="req-tag">8GB+ VRAM recommended</span>
+    <span class="req-tag">16GB+ RAM recommended</span>
+  </div>
+</div>
+
+<footer>MMKPC Studios · Human motion generation powered by <a href="https://huggingface.co/nvidia/Kimodo-SOMA-RP-v1.1" style="color:#f97316;text-decoration:none;">NVIDIA KiMoDo</a> · Open setup tooling by Matthew Mitchell</footer>
+
+<script>
+// ── Procedural walk-cycle stick figure ───────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = canvas.offsetWidth;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const COLOR = {
+  bg: '#0e1420',
+  grid: '#131926',
+  bone: '#f97316',
+  joint: '#fb923c',
+  shadow: 'rgba(249,115,22,0.12)',
+  trail: 'rgba(249,115,22,0.04)',
+};
+
+// Figure dimensions relative to height
+const H = 220; // canvas internal height kept constant
+const SCALE = H * 0.34; // ~75px
+
+// Joint positions procedurally computed from phase
+function figure(t) {
+  const s = Math.sin, c = Math.cos;
+  const stride = 0.9; // stride amplitude
+  const bounce = 0.04; // vertical bob
+
+  // Phase offsets
+  const lp = s(t);             // left phase
+  const rp = s(t + Math.PI);   // right phase (opposite)
+
+  // Hip height bob
+  const hipY = H * 0.44 - s(2 * t) * SCALE * bounce;
+
+  const hip = { x: 0, y: hipY };
+  const head = { x: s(t) * SCALE * 0.02, y: hipY - SCALE * 0.82 };
+  const neck = { x: s(t) * SCALE * 0.015, y: hipY - SCALE * 0.62 };
+
+  // Arms (opposite to legs)
+  const lShoulder = { x: -SCALE * 0.22, y: neck.y + SCALE * 0.05 };
+  const rShoulder = { x:  SCALE * 0.22, y: neck.y + SCALE * 0.05 };
+  const lElbow = { x: lShoulder.x - s(t + Math.PI) * SCALE * 0.18, y: lShoulder.y + SCALE * 0.24 };
+  const rElbow = { x: rShoulder.x - s(t) * SCALE * 0.18, y: rShoulder.y + SCALE * 0.24 };
+  const lHand = { x: lElbow.x - s(t + Math.PI) * SCALE * 0.14, y: lElbow.y + SCALE * 0.22 };
+  const rHand = { x: rElbow.x - s(t) * SCALE * 0.14, y: rElbow.y + SCALE * 0.22 };
+
+  // Hips
+  const lHip = { x: -SCALE * 0.16, y: hipY };
+  const rHip = { x:  SCALE * 0.16, y: hipY };
+
+  // Knees + feet with lift
+  const lKnee = {
+    x: lHip.x + lp * SCALE * stride * 0.22,
+    y: hipY + SCALE * 0.36 + Math.abs(lp) * SCALE * -0.06
+  };
+  const rKnee = {
+    x: rHip.x + rp * SCALE * stride * 0.22,
+    y: hipY + SCALE * 0.36 + Math.abs(rp) * SCALE * -0.06
+  };
+  const lFoot = {
+    x: lHip.x + lp * SCALE * stride * 0.42,
+    y: hipY + SCALE * 0.72 - Math.max(0, lp) * SCALE * 0.14
+  };
+  const rFoot = {
+    x: rHip.x + rp * SCALE * stride * 0.42,
+    y: hipY + SCALE * 0.72 - Math.max(0, rp) * SCALE * 0.14
+  };
+
+  return { hip, head, neck, lShoulder, rShoulder, lElbow, rElbow, lHand, rHand,
+           lHip, rHip, lKnee, rKnee, lFoot, rFoot };
+}
+
+function bone(a, b, cx, cy) {
+  ctx.beginPath();
+  ctx.moveTo(cx + a.x, cy + a.y);
+  ctx.lineTo(cx + b.x, cy + b.y);
+  ctx.stroke();
+}
+
+function joint(p, cx, cy, r = 3.5) {
+  ctx.beginPath();
+  ctx.arc(cx + p.x, cy + p.y, r, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+let t = 0;
+const CX = () => canvas.width / 2;
+const CY = () => 0;
+
+// Background grid lines (subtle)
+function drawGrid() {
+  ctx.strokeStyle = COLOR.grid;
+  ctx.lineWidth = 1;
+  const cw = canvas.width;
+  for (let x = 0; x < cw; x += 40) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += 40) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cw, y); ctx.stroke();
+  }
+  // Floor line
+  ctx.strokeStyle = '#1e2535';
+  ctx.lineWidth = 1;
+  const floorY = H * 0.44 + SCALE * 0.72 + 4;
+  ctx.beginPath(); ctx.moveTo(0, floorY); ctx.lineTo(cw, floorY); ctx.stroke();
+}
+
+// Shadow under feet
+function drawShadow(f, cx) {
+  const floorY = H * 0.44 + SCALE * 0.72 + 2;
+  ctx.fillStyle = COLOR.shadow;
+  ctx.beginPath();
+  ctx.ellipse(cx, floorY, SCALE * 0.25, 6, 0, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Speed counter top-right
+let frame = 0;
+function drawHUD() {
+  const fps30_equiv = Math.floor((t / (Math.PI * 2)) * 30) % 1000;
+  ctx.fillStyle = '#1e2535';
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText(`frame ${String(fps30_equiv).padStart(4,'0')} · 30fps`, canvas.width - 16, 22);
+  ctx.textAlign = 'left';
+}
+
+function loop() {
+  t += 0.035; // walk speed
+
+  // Resize canvas height
+  canvas.height = H;
+
+  // Clear
+  ctx.fillStyle = COLOR.bg;
+  ctx.fillRect(0, 0, canvas.width, H);
+
+  drawGrid();
+
+  const cx = CX();
+  const f = figure(t);
+
+  drawShadow(f, cx);
+
+  // Draw skeleton
+  ctx.strokeStyle = COLOR.bone;
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+
+  // Spine + head
+  bone(f.hip, f.neck, cx, 0);
+  bone(f.neck, f.head, cx, 0);
+
+  // Arms
+  bone(f.lShoulder, f.lElbow, cx, 0);
+  bone(f.lElbow, f.lHand, cx, 0);
+  bone(f.rShoulder, f.rElbow, cx, 0);
+  bone(f.rElbow, f.rHand, cx, 0);
+
+  // Legs
+  bone(f.lHip, f.lKnee, cx, 0);
+  bone(f.lKnee, f.lFoot, cx, 0);
+  bone(f.rHip, f.rKnee, cx, 0);
+  bone(f.rKnee, f.rFoot, cx, 0);
+
+  // Hip crossbar
+  bone(f.lHip, f.rHip, cx, 0);
+  bone(f.lShoulder, f.rShoulder, cx, 0);
+
+  // Joints
+  ctx.fillStyle = COLOR.joint;
+  [f.hip, f.neck, f.lShoulder, f.rShoulder,
+   f.lElbow, f.rElbow, f.lHip, f.rHip,
+   f.lKnee, f.rKnee].forEach(p => joint(p, cx, 0));
+
+  // Head circle
+  ctx.fillStyle = COLOR.bone;
+  ctx.beginPath();
+  ctx.arc(cx + f.head.x, f.head.y, SCALE * 0.085, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Hands + feet (smaller)
+  ctx.fillStyle = COLOR.joint;
+  [f.lHand, f.rHand, f.lFoot, f.rFoot].forEach(p => joint(p, cx, 0, 2.5));
+
+  drawHUD();
+
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html>
