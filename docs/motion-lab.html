@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive browser workflow visualizer for the KiMoDo local motion pipeline.">
+  <title>KiMoDo Motion Direction Lab | MMKPC Studios</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="motion-lab.css">
+</head>
+<body class="lab-page">
+  <header class="site-header">
+    <a class="brand" href="index.html">MMKPC <span>STUDIOS</span> / KIMODO LAB</a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="index.html">Project overview</a>
+      <a href="#workspace">Workspace</a>
+      <a href="https://mmkprospects.com/#director-systems">Director profile</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="lab-hero section-shell">
+      <div><p class="eyebrow">Browser workflow demonstrator</p><h1>Direct the motion before the expensive handoff.</h1></div>
+      <p>Choose an intent, tune timing and energy, inspect a procedural skeleton preview, then export a production brief. This page demonstrates the review and handoff surface; it does not run the private local KiMoDo model.</p>
+    </section>
+
+    <section class="motion-workspace section-shell" id="workspace">
+      <aside class="control-panel">
+        <div class="control-head"><span>01 / Direction</span><strong>Performance brief</strong></div>
+        <label for="motion-intent">Motion intent</label>
+        <textarea id="motion-intent">A cautious walk forward, then a quick reach toward a control panel.</textarea>
+        <div class="preset-row" aria-label="Motion presets">
+          <button type="button" data-preset="walk" class="is-selected">Walk</button>
+          <button type="button" data-preset="reach">Reach</button>
+          <button type="button" data-preset="sidestep">Sidestep</button>
+          <button type="button" data-preset="takeoff">Takeoff</button>
+        </div>
+        <label for="tempo">Tempo <output for="tempo" data-tempo-value>1.00x</output></label>
+        <input id="tempo" type="range" min="0.5" max="1.8" step="0.05" value="1">
+        <label for="energy">Performance energy <output for="energy" data-energy-value>62%</output></label>
+        <input id="energy" type="range" min="20" max="100" step="1" value="62">
+        <label for="frame">Review frame <output for="frame" data-frame-value>000</output></label>
+        <input id="frame" type="range" min="0" max="119" step="1" value="0">
+        <div class="control-actions">
+          <button type="button" class="lab-button lab-button-primary" data-toggle>Pause</button>
+          <button type="button" class="lab-button" data-export>Export brief</button>
+        </div>
+      </aside>
+
+      <div class="stage-panel">
+        <div class="stage-toolbar"><span data-state-label>LIVE PREVIEW / WALK</span><span>30 FPS / 120 FRAMES</span></div>
+        <canvas data-motion-canvas width="900" height="620" aria-label="Procedural skeleton motion preview"></canvas>
+        <div class="timeline"><i data-playhead></i><span>00</span><span>01</span><span>02</span><span>03</span><span>04 sec</span></div>
+      </div>
+
+      <aside class="validation-panel">
+        <div class="control-head"><span>02 / Validation</span><strong>Handoff readiness</strong></div>
+        <dl class="validation-list">
+          <div><dt>Root continuity</dt><dd data-check="root">Stable</dd></div>
+          <div><dt>Foot contact</dt><dd data-check="feet">Locked</dd></div>
+          <div><dt>Joint range</dt><dd data-check="joints">Valid</dd></div>
+          <div><dt>Loop boundary</dt><dd data-check="loop">Clean</dd></div>
+        </dl>
+        <div class="handoff-card">
+          <span>Output contract</span>
+          <strong>Motion direction package</strong>
+          <ul><li>Intent and preset</li><li>Timing profile</li><li>Energy target</li><li>Frame review note</li><li>BVH retarget destination</li></ul>
+        </div>
+      </aside>
+    </section>
+
+    <section class="pipeline-readout section-shell">
+      <div class="pipeline-node is-done"><span>01</span><strong>Direct</strong><small>Human intent</small></div>
+      <div class="pipeline-link"></div>
+      <div class="pipeline-node is-active"><span>02</span><strong>Preview</strong><small>Browser study</small></div>
+      <div class="pipeline-link"></div>
+      <div class="pipeline-node"><span>03</span><strong>Generate</strong><small>Private local model</small></div>
+      <div class="pipeline-link"></div>
+      <div class="pipeline-node"><span>04</span><strong>Retarget</strong><small>DCC / engine</small></div>
+    </section>
+
+    <section class="lab-boundary section-shell">
+      <div><p class="eyebrow">What this proves</p><h2>A director-facing control surface, not a fake model demo.</h2></div>
+      <p>The live skeleton is a deterministic procedural visualization built for this public showcase. It demonstrates interaction, review controls, motion vocabulary, validation gates, and the shape of a production handoff. Model inference, private weights, local paths, and DCC automation remain protected.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer section-shell"><span>MMKPC Studios / KiMoDo Motion Lab</span><span>Technical direction by Matthew Mitchell</span></footer>
+  <script src="motion-lab.js"></script>
+</body>
+</html>
